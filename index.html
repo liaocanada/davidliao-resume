@@ -1,0 +1,47 @@
+<!--Get the samples from https://www.adobe.com/go/pdfembedapi_samples-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Resume</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body style="margin: 0px">
+  <div id="adobe-dc-view"></div>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script type="text/javascript">
+    const zoomLevel = 1.2;
+    const uiOptions = {
+      showPageControls: true,
+      showAnnotationTools: false,
+      showLeftHandPanel: false,
+      enableFormFilling: false,
+    };
+
+    document.addEventListener("adobe_dc_view_sdk.ready", () => {
+      // Client ID is not sensitive, only usable on resume.davidliao.ca
+      const adobeDCView = new AdobeDC.View({ clientId: "4b2bfbfa220b48828670f21f4f7a129b", divId: "adobe-dc-view" });
+      const previewFilePromise = adobeDCView.previewFile({
+        content: { location: { url: "https://cdn.jsdelivr.net/gh/liaocanada/davidliao-site/github-static/DavidLiao-Resume.pdf" } },
+        metaData: { fileName: "David's Resume" }
+      }, uiOptions);
+
+      previewFilePromise.then(adobeViewer => {
+        adobeViewer.getAPIs().then(apis => {
+          apis.getZoomAPIs().getZoomLimits()
+            .then(result => console.log("Minimum and maximum zoom limit of the PDF: ", result))
+            .catch(error => console.error(error));
+
+          apis.getZoomAPIs().setZoomLevel(zoomLevel)
+            .then(result => console.log("Zoom level:", result))
+            .catch(error => console.error(error));
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
